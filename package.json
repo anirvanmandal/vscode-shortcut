@@ -1,7 +1,7 @@
 {
   "name": "vscode-shortcut-tasks",
   "displayName": "Shortcut Tasks",
-  "icon": "resources/shortcut.png",
+  "icon": "resources/logo-shortcut.png",
   "description": "Manage tasks across all workspaces of shortcut",
   "version": "0.0.2",
   "engines": {
