@@ -15,37 +15,56 @@
     "configuration": {
       "title": "Shortcut Tasks",
       "properties": {
-        "shortcutTasks.apiToken": {
-          "type": "string",
-          "default": "97f42e77-8f57-48eb-95e8-f244104ca6e4",
-          "description": "API token for Shortcut authentication (will be stored securely)"
-        },
-        "shortcutTasks.refreshInterval": {
-          "type": "number",
-          "default": 300,
-          "minimum": 60,
-          "description": "How often to refresh tasks (in seconds)"
+        "shortcutTasks.apiTokens": {
+          "type": "array",
+          "default": [],
+          "description": "API tokens for Shortcut authentication (will be stored securely)"
         }
       }
     },
     "commands": [
       {
-        "command": "extension.fetchShortcutTasks",
-        "title": "Fetch Shortcut Tasks"
+        "command": "shortcutStories.fetchShortcutTasks",
+        "title": "Fetch Shortcut Tasks",
+        "icon": "$(extensions-refresh)"
+      },
+      {
+        "command": "shortcutStories.openStory",
+        "title": "Open Story",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "shortcutStories.completeTask",
+        "title": "Complete Task",
+        "icon": "$(check)"
       }
     ],
-    "viewsContainers": {
-      "activitybar": [{
-        "id": "shortcut-tasks",
-        "title": "Shortcut Tasks",
-        "icon": "resources/shortcut.svg"
+    "views": {
+      "explorer": [{
+        "id": "shortcutStories",
+        "name": "Workspaces"
       }]
     },
-    "views": {
-      "shortcut-tasks": [{
-        "id": "shortcutStories",
-        "name": "Stories"
-      }]
+    "menus": {
+      "view/title": [
+        {
+          "command": "shortcutStories.fetchShortcutTasks",
+          "when": "view == shortcutStories",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "shortcutStories.openStory", 
+          "when": "view == shortcutStories && viewItem == story",
+          "group": "inline"
+        },
+        {
+          "command": "shortcutStories.completeTask",
+          "when": "view == shortcutStories && viewItem == task && !viewItem.isComplete",
+          "group": "inline"
+        }
+      ]
     }
   },
   "scripts": {
@@ -76,6 +95,7 @@
     "@vscode/test-electron": "^2.4.1"
   },
   "dependencies": {
-    "@shortcut/client": "^1.1.0"
+    "@shortcut/client": "^1.1.0",
+    "markdown-to-text": "^0.1.1"
   }
 }

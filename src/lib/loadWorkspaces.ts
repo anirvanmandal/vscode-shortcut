@@ -1,0 +1,26 @@
+import * as vscode from 'vscode';
+import { Workspace } from '../models/workspace';
+import { StoryTreeProvider } from '../storyTreeProvider';
+
+export const loadWorkspaces = async (workspaces: Workspace[], storyTreeProvider: StoryTreeProvider) => {
+    try {
+		await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: "Fetching Shortcut tasks...",
+			cancellable: false
+		}, async (progress) => {
+				for (const workspace of workspaces) {
+					await workspace.getStories();
+					storyTreeProvider.refresh(workspaces);
+				}
+
+                console.log(workspaces);
+
+			if (workspaces.length === 0) {
+				vscode.window.showInformationMessage('No workspaces found in Shortcut.');
+			}
+		});
+	} catch (error: any) {
+		vscode.window.showErrorMessage(`Error fetching Shortcut tasks: ${error.message}`);
+	}
+};

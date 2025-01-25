@@ -34,14 +34,17 @@ export class MemberInfo extends BaseModel {
     }
 
     static async get(): Promise<MemberInfo> {
-        let memberInfo = MemberInfo.fetchFromCache();
-        if (memberInfo) {
-            return memberInfo;
-        }
+        // let memberInfo = MemberInfo.fetchFromCache();
+        // console.log(memberInfo);
+        // if (memberInfo) {
+        //     return memberInfo;
+        // }
         
-        memberInfo = await MemberInfo.fetch();
-        await MemberInfo.saveToCache(memberInfo);
+        let memberInfo = await MemberInfo.fetch();
+        // await MemberInfo.saveToCache(memberInfo);
+
         
+        console.log(memberInfo);
         return memberInfo;
     }
 
