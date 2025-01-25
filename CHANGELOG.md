@@ -9,5 +9,3 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.0.1] - 2025-01-25
 
 - Initial release
-
-
