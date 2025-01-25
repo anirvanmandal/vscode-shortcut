@@ -19,14 +19,7 @@ This extension helps you manage your Shortcut tasks directly within VSCode. It s
 
 This extension contributes the following settings:
 
-- `shortcut.apiToken`: Your Shortcut API token (required for authentication)
-
-## Setup
-
-1. Install the extension from the VS Code marketplace
-2. Open VS Code settings
-3. Add your Shortcut API token in the `shortcut.apiTokens` settings
-4. The settings should look like this:
+- `shortcut.apiTokens`
 
 ```json
 {
@@ -36,6 +29,14 @@ This extension contributes the following settings:
     }
 }
 ```
+
+## Setup
+
+1. Install the extension from the VS Code marketplace
+2. Open VS Code settings
+3. Add your Shortcut API token in the `shortcut.apiTokens` settings
+4. The settings should look like this:
+5. Reload VS Code
 
 ## Usage
 

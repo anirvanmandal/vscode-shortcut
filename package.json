@@ -1,14 +1,20 @@
 {
   "name": "vscode-shortcut-tasks",
   "displayName": "Shortcut Tasks",
+  "icon": "resources/shortcut.png",
   "description": "Manage tasks across all workspaces of shortcut",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.93.0"
   },
   "categories": [
     "Other"
   ],
+  "publisher": "Anirvan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anirvanmandal/vscode-shortcut"
+  },
   "tags": [
     "productivity",
     "tasks",
