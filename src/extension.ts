@@ -36,10 +36,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(treeView);
 
 	if (apiTokens) {
-		for (const token of apiTokens) {
-			const tokenObj = token as { token: string; workspace: string };
-			const client = new ShortcutClient(tokenObj.token);
-			const workspace = new Workspace(tokenObj.workspace, client, []);
+		for (const [key, value] of Object.entries(apiTokens)) {
+			const client = new ShortcutClient(value as unknown as string);
+			const workspace = new Workspace(key, client, []);
 			workspaces.push(workspace);
 		}
 	}

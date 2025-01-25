@@ -1,6 +1,6 @@
 {
   "name": "vscode-shortcut-tasks",
-  "displayName": "vscode-shortcut-tasks",
+  "displayName": "Shortcut Tasks",
   "description": "Manage tasks across all workspaces of shortcut",
   "version": "0.0.1",
   "engines": {
@@ -9,19 +9,27 @@
   "categories": [
     "Other"
   ],
+  "tags": [
+    "productivity",
+    "tasks",
+    "shortcut"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "configuration": {
+    "configuration": [{
       "title": "Shortcut Tasks",
       "properties": {
         "shortcutTasks.apiTokens": {
-          "type": "array",
-          "default": [],
-          "description": "API tokens for Shortcut authentication (will be stored securely)"
+          "title": "API Tokens",
+          "markdownDescription": "The list of workspace and their API tokens",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
-    },
+    }],
     "commands": [
       {
         "command": "shortcutStories.fetchShortcutTasks",
