@@ -1,8 +1,8 @@
 {
   "name": "vscode-shortcut-tasks",
-  "displayName": "Shortcut Tasks",
+  "displayName": "Shortcut",
   "icon": "resources/logo-shortcut.png",
-  "description": "Manage tasks across all workspaces of shortcut",
+  "description": "Manage Shortcut workflows from your VSCode",
   "version": "0.0.2",
   "engines": {
     "vscode": "^1.93.0"
@@ -38,43 +38,50 @@
     }],
     "commands": [
       {
-        "command": "shortcutStories.fetchShortcutTasks",
+        "command": "pendingTasks.fetchShortcutTasks",
         "title": "Fetch Shortcut Tasks",
         "icon": "$(extensions-refresh)"
       },
       {
-        "command": "shortcutStories.openStory",
+        "command": "pendingTasks.openStory",
         "title": "Open Story",
         "icon": "$(link-external)"
       },
       {
-        "command": "shortcutStories.completeTask",
+        "command": "pendingTasks.completeTask",
         "title": "Complete Task",
         "icon": "$(check)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [{
+        "id": "shortcut",
+        "title": "Shortcut",
+        "icon": "resources/logo-shortcut.png"
+      }]
+    },
     "views": {
-      "explorer": [{
-        "id": "shortcutStories",
-        "name": "Workspaces"
+      "shortcut": [{
+        "id": "pendingTasks",
+        "name": "Pending Tasks"
       }]
     },
     "menus": {
       "view/title": [
         {
-          "command": "shortcutStories.fetchShortcutTasks",
+          "command": "pendingTasks.fetchShortcutTasks",
           "when": "view == shortcutStories",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "shortcutStories.openStory", 
+          "command": "pendingTasks.openStory", 
           "when": "view == shortcutStories && viewItem == story",
           "group": "inline"
         },
         {
-          "command": "shortcutStories.completeTask",
+          "command": "pendingTasks.completeTask",
           "when": "view == shortcutStories && viewItem == task && !viewItem.isComplete",
           "group": "inline"
         }
