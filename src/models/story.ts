@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
+import { Workspace } from "./workspace";
 import { Task } from "./task";
-import { MemberInfo } from "./memberInfo";
 import { StorySearchResults, Story as ShortcutStory, Task as ShortcutTask, ShortcutClient } from "@shortcut/client";
 
 export class Story extends BaseModel {
@@ -23,10 +23,13 @@ export class Story extends BaseModel {
         return stories;
     }
 
-    static async pendingTasks(client: ShortcutClient): Promise<Story[]> {
+    static async pendingTasks(workspace: Workspace, client: ShortcutClient): Promise<Story[]> {
         BaseModel.client = client;
         const all_stories = await Story.all();
-        const member = await MemberInfo.get();
+        const member = workspace.memberInfo;
+        if (!member) {
+            return [];
+        }
         return all_stories.filter(story => story.tasks.some(task => task.member_mention_ids.includes(member.id) && !task.complete));
     }
 

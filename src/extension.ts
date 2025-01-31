@@ -14,7 +14,7 @@ function getConfiguration(): vscode.WorkspaceConfiguration {
 	return vscode.workspace.getConfiguration('shortcutTasks');
 }
 
-let apiTokens: object[] | undefined;
+let apiTokens: object | undefined;
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -35,13 +35,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(treeView);
 
-	if (apiTokens) {
-		for (const [key, value] of Object.entries(apiTokens)) {
-			const client = new ShortcutClient(value as unknown as string);
-			const workspace = new Workspace(key, client, []);
-			workspaces.push(workspace);
-		}
-	}
+	workspaces = await Workspace.get(apiTokens);
 
 	storyTreeProvider.refresh(workspaces);
 	loadWorkspaces(workspaces, storyTreeProvider);
@@ -53,10 +47,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Listen for configuration changes
 	context.subscriptions.push(
-		vscode.workspace.onDidChangeConfiguration(e => {
+		vscode.workspace.onDidChangeConfiguration(async e => {
 			if (e.affectsConfiguration('pendingTasks')) {
 				const config = getConfiguration();
 				updateFromConfig(config);
+				Workspace.deleteCache(workspaces);
+				workspaces = await Workspace.get(apiTokens);
 				loadWorkspaces(workspaces, storyTreeProvider);
 			}
 		})
@@ -69,6 +65,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(vscode.commands.registerCommand('pendingTasks.openStory', async (item: any) => {
 		vscode.env.openExternal(vscode.Uri.parse(item.story.app_url));
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('refreshWorkspaces', async () => {
+		Workspace.deleteCache(workspaces);
+		workspaces = await Workspace.get(apiTokens);
+		loadWorkspaces(workspaces, storyTreeProvider);
 	}));
 }
 

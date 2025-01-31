@@ -3,12 +3,10 @@ import * as vscode from 'vscode';
 
 export const markTaskAsComplete = async (workspace: Workspace, taskId: number, storyId: number) => {
     const client = workspace.client;
-    console.log(workspace);
     const response = await client.updateTask(storyId, taskId, {
         complete: true
     });
 
-    console.log(response);
     if (response.status === 200) {
         vscode.window.showInformationMessage('Task marked as complete');
         const story = workspace.stories.find(story => story.id === storyId);
