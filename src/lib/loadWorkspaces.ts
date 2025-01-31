@@ -6,7 +6,7 @@ export const loadWorkspaces = async (workspaces: Workspace[], storyTreeProvider:
     try {
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: "Fetching Shortcut tasks...",
+			title: "Fetching Pending tasks...",
 			cancellable: false
 		}, async (progress) => {
 				for (const workspace of workspaces) {
@@ -14,13 +14,11 @@ export const loadWorkspaces = async (workspaces: Workspace[], storyTreeProvider:
 					storyTreeProvider.refresh(workspaces);
 				}
 
-                console.log(workspaces);
-
 			if (workspaces.length === 0) {
 				vscode.window.showInformationMessage('No workspaces found in Shortcut.');
 			}
 		});
 	} catch (error: any) {
-		vscode.window.showErrorMessage(`Error fetching Shortcut tasks: ${error.message}`);
+		vscode.window.showErrorMessage(`Error fetching Pending tasks: ${error.message}`);
 	}
 };

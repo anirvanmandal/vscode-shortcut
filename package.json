@@ -39,18 +39,23 @@
     "commands": [
       {
         "command": "pendingTasks.fetchShortcutTasks",
-        "title": "Fetch Shortcut Tasks",
+        "title": "Shortcut: Fetch Pending Tasks",
         "icon": "$(extensions-refresh)"
       },
       {
         "command": "pendingTasks.openStory",
-        "title": "Open Story",
+        "title": "Shortcut: Open Story",
         "icon": "$(link-external)"
       },
       {
         "command": "pendingTasks.completeTask",
-        "title": "Complete Task",
+        "title": "Shortcut: Complete Task",
         "icon": "$(check)"
+      },
+      {
+        "command": "refreshWorkspaces",
+        "title": "Shortcut: Refresh Workspaces",
+        "icon": "$(extensions-refresh)"
       }
     ],
     "viewsContainers": {
@@ -70,19 +75,19 @@
       "view/title": [
         {
           "command": "pendingTasks.fetchShortcutTasks",
-          "when": "view == shortcutStories",
+          "when": "view == pendingTasks",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "pendingTasks.openStory", 
-          "when": "view == shortcutStories && viewItem == story",
+          "when": "view == pendingTasks && viewItem == story",
           "group": "inline"
         },
         {
           "command": "pendingTasks.completeTask",
-          "when": "view == shortcutStories && viewItem == task && !viewItem.isComplete",
+          "when": "view == pendingTasks && viewItem == task && !viewItem.isComplete",
           "group": "inline"
         }
       ]
