@@ -24,9 +24,9 @@
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": [{
-      "title": "Shortcut Tasks",
+      "title": "Shortcut",
       "properties": {
-        "shortcutTasks.apiTokens": {
+        "shortcut.apiTokens": {
           "title": "API Tokens",
           "markdownDescription": "The list of workspace and their API tokens",
           "type": "object",
@@ -56,6 +56,11 @@
         "command": "refreshWorkspaces",
         "title": "Shortcut: Refresh Workspaces",
         "icon": "$(extensions-refresh)"
+      },
+      {
+        "command": "copyBranchName",
+        "title": "Shortcut: Copy Branch Name",
+        "icon": "$(copy)"
       }
     ],
     "viewsContainers": {
@@ -66,10 +71,16 @@
       }]
     },
     "views": {
-      "shortcut": [{
-        "id": "pendingTasks",
-        "name": "Pending Tasks"
-      }]
+      "shortcut": [
+        {
+          "id": "pendingTasks",
+          "name": "Pending Tasks"
+        },
+        {
+          "id": "assignedStories",
+          "name": "Assigned Stories"
+        }
+      ]
     },
     "menus": {
       "view/title": [
@@ -82,12 +93,17 @@
       "view/item/context": [
         {
           "command": "pendingTasks.openStory", 
-          "when": "view == pendingTasks && viewItem == story",
+          "when": "(view == pendingTasks && viewItem == story) || (view == assignedStories && viewItem == story)",
           "group": "inline"
         },
         {
           "command": "pendingTasks.completeTask",
           "when": "view == pendingTasks && viewItem == task && !viewItem.isComplete",
+          "group": "inline"
+        },
+        {
+          "command": "copyBranchName",
+          "when": "view == assignedStories && viewItem == story",
           "group": "inline"
         }
       ]
@@ -95,6 +111,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
+    "publish": "npm run package && vsce publish",
     "compile": "npm run check-types && npm run lint && node esbuild.js",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",

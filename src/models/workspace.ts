@@ -1,32 +1,57 @@
 import { Story } from "./story";
 import { BaseModel } from "./base";
 import { MemberInfo } from "./memberInfo";
+import { Workflow } from "./workflow";
 import { ShortcutClient } from "@shortcut/client";
+
+interface BaseAttributes {
+}
+
+interface WorkspaceAttributes extends BaseAttributes {
+    name: string;
+    apiToken: string;
+    pendingStories: Story[];
+    workflows: Workflow[];
+    estimate_scale?: [] | undefined;
+    url_slug?: string | undefined;
+}
 
 export class Workspace extends BaseModel {
     name: string;
     apiToken: string;
     client: ShortcutClient;
-    stories: Story[];
-    memberInfo: MemberInfo | undefined;
+    pendingStories: Story[];
+    workflows: Workflow[] | [];
+    memberInfo: MemberInfo | undefined = undefined;
     estimate_scale: [] | undefined;
     url_slug: string | undefined;
     
     static cacheKey: string = "workspaces";
 
-    constructor(name: string, apiToken: string, stories: Story[] = [], estimate_scale: [] | undefined = [], url_slug: string | undefined = undefined) {
+    constructor(attributes: WorkspaceAttributes) {
         super();
 
-        this.name = name ?? "";
-        this.apiToken = apiToken ?? "";
-        this.stories = stories ?? [];
-        this.client = new ShortcutClient(apiToken);
-        this.estimate_scale = estimate_scale ?? [];
-        this.url_slug = url_slug ?? "";
+        this.name = attributes.name ?? "";
+        this.apiToken = attributes.apiToken ?? "";
+        this.pendingStories = attributes.pendingStories ?? [];
+        this.workflows = attributes.workflows ?? [];
+        this.client = new ShortcutClient(attributes.apiToken);
+        this.estimate_scale = attributes.estimate_scale ?? [];
+        this.url_slug = attributes.url_slug ?? "";
     }
 
     static fromJSON(json: string): Workspace[] {
-        return JSON.parse(json).map((workspace: any) => new Workspace(workspace.name, workspace.apiToken, [], workspace.estimate_scale, workspace.url_slug));
+        return JSON.parse(json).map((workspace: any) => {
+            const attributes: WorkspaceAttributes = {
+                name: workspace.name,
+                apiToken: workspace.apiToken,
+                pendingStories: workspace.pendingStories,
+                workflows: workspace.workflows,
+                estimate_scale: workspace.estimate_scale,
+                url_slug: workspace.url_slug
+            };
+            return new Workspace(attributes);
+        });
     }
 
     toJSON(): string {
@@ -55,6 +80,7 @@ export class Workspace extends BaseModel {
             console.log("loaded from cache");
             for (const workspace of workspaces) {
                 workspace.memberInfo = await MemberInfo.get(workspace);
+                workspace.workflows = await Workflow.get(workspace);
             }
 
             return workspaces;
@@ -67,8 +93,14 @@ export class Workspace extends BaseModel {
         } 
         
         for (const [key, value] of Object.entries(apiTokens)) {
-			const workspace = new Workspace(key, value as string, []);
+			const workspace = new Workspace({
+                name: key,
+                apiToken: value as string,
+                pendingStories: [],
+                workflows: [],
+            });
             workspace.memberInfo = await MemberInfo.get(workspace);
+            workspace.workflows = await Workflow.get(workspace);
 			workspaces.push(workspace);
         }
 
@@ -98,12 +130,33 @@ export class Workspace extends BaseModel {
         if (workspaces) {
             for (const workspace of workspaces) {
                 MemberInfo.deleteCache(workspace.name);
+                Workflow.deleteCache(workspace.name);
             }
         }
     }
 
-    async getStories(): Promise<Story[]> {
-        this.stories = await Story.pendingTasks(this, this.client);
-        return this.stories;
+    async getPendingStories(): Promise<void> {
+        this.pendingStories = await Story.pendingTasks(this, this.client);
+    }
+
+    async getWorkflows(): Promise<Workflow[]> {
+        this.workflows = await Workflow.get(this);
+        return this.workflows;
+    }
+
+    async getAssignedStories(): Promise<void> {
+        const stories = await Story.assignedToMember(this);
+        const groupedStories = stories.reduce((acc: Record<number, Record<number, Story[]>>, story) => {
+            acc[story.workflow_id] ||= {};
+            acc[story.workflow_id][story.workflow_state_id] ||= [];
+            acc[story.workflow_id][story.workflow_state_id].push(story);
+            return acc;
+        }, {});
+
+        this.workflows.forEach(workflow => {
+            workflow.states.forEach(state => {
+                state.stories = groupedStories[workflow.id]?.[state.id] ?? [];
+            });
+        });
     }
 }

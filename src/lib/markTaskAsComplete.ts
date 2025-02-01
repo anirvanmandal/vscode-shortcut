@@ -9,7 +9,7 @@ export const markTaskAsComplete = async (workspace: Workspace, taskId: number, s
 
     if (response.status === 200) {
         vscode.window.showInformationMessage('Task marked as complete');
-        const story = workspace.stories.find(story => story.id === storyId);
+        const story = workspace.pendingStories.find(story => story.id === storyId);
         const task = story?.tasks.find(task => task.id === taskId);
         if (story && task) {
             task.complete = true;

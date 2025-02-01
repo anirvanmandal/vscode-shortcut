@@ -5,7 +5,6 @@ export class MemberInfo extends BaseModel {
     id: string;
     name: string;
     mention_name: string;
-    workspace: Workspace | undefined;
 
     constructor(id?: string, name?: string, mentionName?: string) {
         super();
@@ -21,7 +20,6 @@ export class MemberInfo extends BaseModel {
     static async fetch(workspace: Workspace): Promise<MemberInfo> {
         const response = await workspace.client.getCurrentMemberInfo();
         const memberInfo = MemberInfo.fromJson(response.data);
-        memberInfo.workspace = workspace;
         workspace.updateAttributes(response.data, memberInfo);
         
         return memberInfo;
@@ -56,7 +54,6 @@ export class MemberInfo extends BaseModel {
         let memberInfo = MemberInfo.fetchFromCache(workspace.name);
         
         if (memberInfo) {
-            memberInfo.workspace = workspace;
             console.log("loaded from cache");
             return memberInfo;
         }
