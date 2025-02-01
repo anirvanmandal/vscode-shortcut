@@ -1,4 +1,5 @@
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
+import tsdoc from "eslint-plugin-tsdoc";
 import tsParser from "@typescript-eslint/parser";
 
 export default [{
@@ -6,6 +7,7 @@ export default [{
 }, {
     plugins: {
         "@typescript-eslint": typescriptEslint,
+        tsdoc,
     },
 
     languageOptions: {

@@ -1,4 +1,4 @@
-# VSCode Shortcut Tasks Extension
+# VSCode Shortcut Extension
 
 This extension helps you manage your Shortcut tasks directly within VSCode. It seamlessly integrates with Shortcut to display and manage tasks across all your workspaces, making task management more efficient and accessible.
 
@@ -36,7 +36,6 @@ This extension contributes the following settings:
 2. Open VS Code settings
 3. Add your Shortcut API token in the `shortcut.apiTokens` settings
 4. The settings should look like this:
-5. Reload VS Code
 
 ## Usage
 
@@ -50,18 +49,7 @@ This extension contributes the following settings:
 
 No known issues at this time. Please report any bugs on our GitHub repository.
 
-## Release Notes
-
-### 0.0.1
-
-Initial release of VSCode Shortcut Tasks Extension:
-
-- View pending tasks
-- Complete tasks
-- Open stories in Shortcut
-- Auto-refresh task list
-
----
+## See [CHANGELOG.md](./CHANGELOG.md) for Release Notes
 
 ## Contributing
 
