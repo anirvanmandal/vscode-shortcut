@@ -1,17 +1,18 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { ShortcutClient } from '@shortcut/client';
 import { StoryTreeProvider } from './storyTreeProvider';
+import { AssignedStoryTreeProvider } from './assignedStoryTreeProvider';
 
 import { BaseModel } from './models/base';
 import { Workspace } from './models/workspace';
-import { loadWorkspaces } from './lib/loadWorkspaces';
+import { loadPendingTasks } from './lib/loadPendingTasks';
+import { loadAssignedStories } from './lib/loadAssignedStories';
 import { markTaskAsComplete } from './lib/markTaskAsComplete';
 
 // Add this helper function to get configuration
 function getConfiguration(): vscode.WorkspaceConfiguration {
-	return vscode.workspace.getConfiguration('shortcutTasks');
+	return vscode.workspace.getConfiguration('shortcut');
 }
 
 let apiTokens: object | undefined;
@@ -24,25 +25,34 @@ export async function activate(context: vscode.ExtensionContext) {
 	let workspaces: Workspace[] = [];
 
 	const storyTreeProvider = new StoryTreeProvider();
+	const assignedStoryTreeProvider = new AssignedStoryTreeProvider();
 	
 	console.log('Congratulations, your extension "vscode-shortcut-tasks" is now active!');
 
 	const treeView = vscode.window.createTreeView('pendingTasks', {
 		treeDataProvider: storyTreeProvider
 	});
+
+	const assignedTreeView = vscode.window.createTreeView('assignedStories', {
+		treeDataProvider: assignedStoryTreeProvider
+	});
 	
 	storyTreeProvider.refresh([]);
+	assignedStoryTreeProvider.refresh([]);
 
 	context.subscriptions.push(treeView);
+	context.subscriptions.push(assignedTreeView);
 
 	workspaces = await Workspace.get(apiTokens);
 
 	storyTreeProvider.refresh(workspaces);
-	loadWorkspaces(workspaces, storyTreeProvider);
-
+	assignedStoryTreeProvider.refresh(workspaces);
+	loadPendingTasks(workspaces, storyTreeProvider);
+	loadAssignedStories(workspaces, assignedStoryTreeProvider);
 	// Register command to fetch tasks
-	let disposable = vscode.commands.registerCommand('pendingTasks.fetchShortcutTasks', async () => {
-		loadWorkspaces(workspaces, storyTreeProvider);
+	let disposable = vscode.commands.registerCommand('shortcut.fetchShortcutTasks', async () => {
+		loadPendingTasks(workspaces, storyTreeProvider);
+		loadAssignedStories(workspaces, assignedStoryTreeProvider);
 	});
 
 	// Listen for configuration changes
@@ -53,13 +63,18 @@ export async function activate(context: vscode.ExtensionContext) {
 				updateFromConfig(config);
 				Workspace.deleteCache(workspaces);
 				workspaces = await Workspace.get(apiTokens);
-				loadWorkspaces(workspaces, storyTreeProvider);
+				loadPendingTasks(workspaces, storyTreeProvider);
+				loadAssignedStories(workspaces, assignedStoryTreeProvider);
 			}
 		})
 	);
 
 	context.subscriptions.push(vscode.commands.registerCommand('pendingTasks.completeTask', async (item: any) => {
 		markTaskAsComplete(item.workspace, item.taskId, item.storyId);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('copyBranchName', async (item: any) => {
+		vscode.env.clipboard.writeText(item.story.branchName(item.workspace));
 	}));
 
 	context.subscriptions.push(disposable);
@@ -70,7 +85,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('refreshWorkspaces', async () => {
 		Workspace.deleteCache(workspaces);
 		workspaces = await Workspace.get(apiTokens);
-		loadWorkspaces(workspaces, storyTreeProvider);
+		loadPendingTasks(workspaces, storyTreeProvider);
+		loadAssignedStories(workspaces, assignedStoryTreeProvider);
 	}));
 }
 

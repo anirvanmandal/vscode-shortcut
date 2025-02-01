@@ -25,9 +25,9 @@ export class StoryTreeProvider implements vscode.TreeDataProvider<TreeItem> {
             // Root level - return stories
             return Promise.resolve(
                 this.workspaces.map(workspace => new WorkspaceTreeItem(
-                    workspace.name,
-                    workspace.stories.length > 0 ? 
-                        vscode.TreeItemCollapsibleState.Expanded : 
+                    `${workspace.name} (${workspace.pendingStories.length})`,
+                    workspace.pendingStories.length > 0 ? 
+                        vscode.TreeItemCollapsibleState.Collapsed : 
                         vscode.TreeItemCollapsibleState.None,
                     workspace
                 ))
@@ -35,11 +35,11 @@ export class StoryTreeProvider implements vscode.TreeDataProvider<TreeItem> {
         } else if (element instanceof WorkspaceTreeItem) {
             // Story level - return tasks
             return Promise.resolve(
-                element.workspace.stories.map(story => new StoryTreeItem(
+                element.workspace.pendingStories.map(story => new StoryTreeItem(
                     story.name,
                     story.id,
                     story.tasks.length > 0 ? 
-                        vscode.TreeItemCollapsibleState.Expanded : 
+                        vscode.TreeItemCollapsibleState.Collapsed : 
                         vscode.TreeItemCollapsibleState.None,
                     story,
                     element.workspace

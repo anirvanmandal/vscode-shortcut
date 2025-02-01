@@ -2,10 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- Add a new tree view for assigned stories [#5](https://github.com/anirvanmandal/vscode-shortcut/issues/5)
+
 ### Changed
 
-- Create a new view container in the activity bar and move the existing tree view to it [#1](https://github.com/anirvanmandal/vscode-shortcut/issues/1)
 - Cache the workspaces and member info to reduce API calls. Add an action to delete the cache and refresh the workspaces. [#4](https://github.com/anirvanmandal/vscode-shortcut/issues/4)
+- Create a new view container in the activity bar and move the existing tree view to it [#1](https://github.com/anirvanmandal/vscode-shortcut/issues/1)
+
 
 ## [0.0.2] - 2025-01-25
 
