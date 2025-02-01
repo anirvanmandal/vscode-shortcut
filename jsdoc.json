@@ -23,7 +23,6 @@
         "encoding": "utf8",
         "private": true,
         "recurse": true,
-        "readme": "README.md",
-        "package": "package.json"
+        "readme": "README.md"
     }
 }
