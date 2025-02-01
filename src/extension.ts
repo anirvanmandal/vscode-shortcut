@@ -10,15 +10,27 @@ import { loadPendingTasks } from './lib/loadPendingTasks';
 import { loadAssignedStories } from './lib/loadAssignedStories';
 import { markTaskAsComplete } from './lib/markTaskAsComplete';
 
-// Add this helper function to get configuration
+/**
+ * Retrieves the Shortcut extension configuration from VS Code settings.
+ * @returns {vscode.WorkspaceConfiguration} The extension's configuration
+ */
 function getConfiguration(): vscode.WorkspaceConfiguration {
 	return vscode.workspace.getConfiguration('shortcut');
 }
 
 let apiTokens: object | undefined;
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+/**
+ * Activates the extension and sets up all necessary components.
+ * This includes:
+ * - Setting up tree views for pending tasks and assigned stories
+ * - Initializing workspaces with API tokens
+ * - Registering commands for task management
+ * - Setting up configuration change listeners
+ * 
+ * @param {vscode.ExtensionContext} context - The VS Code extension context
+ * @returns {Promise<void>} A promise that resolves when activation is complete
+ */
 export async function activate(context: vscode.ExtensionContext) {
 	updateFromConfig(getConfiguration());
 	BaseModel.context = context;
@@ -49,6 +61,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	assignedStoryTreeProvider.refresh(workspaces);
 	loadPendingTasks(workspaces, storyTreeProvider);
 	loadAssignedStories(workspaces, assignedStoryTreeProvider);
+
 	// Register command to fetch tasks
 	let disposable = vscode.commands.registerCommand('shortcut.fetchShortcutTasks', async () => {
 		loadPendingTasks(workspaces, storyTreeProvider);
@@ -90,9 +103,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	}));
 }
 
+/**
+ * Updates the extension's configuration from VS Code settings.
+ * @param {vscode.WorkspaceConfiguration} config - The new configuration
+ */
 function updateFromConfig(config: vscode.WorkspaceConfiguration) {
 	apiTokens = config.get<object[]>('apiTokens');
 }
 
-// This method is called when your extension is deactivated
+/**
+ * Handles cleanup when the extension is deactivated.
+ * Currently no cleanup is needed.
+ */
 export function deactivate() {}
