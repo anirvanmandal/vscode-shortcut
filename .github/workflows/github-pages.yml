@@ -19,7 +19,6 @@ jobs:
       - name: Install modules
         run: | 
           npm i
-          npm run build:production
       - name: Build
         uses: andstor/jsdoc-action@v1
         with:
