@@ -59,7 +59,7 @@ This extension has the following settings:
 
 Please take a look at the [issues](https://github.com/shortcut-tools/vscode-shortcut/issues) page for any known issues.
 
-## See [CHANGELOG](./CHANGELOG.md) for Release Notes
+## See [CHANGELOG](./CHANGELOG.html) for Release Notes
 
 ## Contributing
 
