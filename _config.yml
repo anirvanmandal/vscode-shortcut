@@ -9,6 +9,8 @@ exclude:
   - "*.ts"
   - "*.json"
   - "*.mjs"
+  - node_modules/
+  - _site/
   - DOCUMENTATION.md
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
