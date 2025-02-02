@@ -6,6 +6,12 @@ permalink: changelog.html
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-02-02
+
+### Fixed
+
+- Fix the documentation and add extra changes
+
 ## [0.1.1] - 2025-02-02
 
 ### Fixed

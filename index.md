@@ -1,3 +1,7 @@
+---
+permalink: index.html
+---
+
 # VSCode Shortcut Extension
 
 This extension helps you manage your [Shortcut](https://www.shortcut.com/) stories from within VSCode. It seamlessly integrates with Shortcut to display assigned stories across all your workspaces. It also displays stories that have a task assigned to you.

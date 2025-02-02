@@ -1,7 +1,6 @@
 source: ./
 destination: ./_site
 include:
-  - ./README.md
   - ./CHANGELOG.md
   - ./resources/documentation/*
   - ./docs/*
@@ -14,6 +13,7 @@ exclude:
   - node_modules/
   - _site/
   - DOCUMENTATION.md
+  - README.md
 # remote_theme: pages-themes/minimal@v0.2.0
 # plugins:
 # - jekyll-remote-theme
