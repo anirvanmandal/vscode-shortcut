@@ -19,10 +19,10 @@
         "showInheritedInNav": true
     },
     "opts": {
-        "destination": "./docs",
+        "destination": "./_site/docs",
         "encoding": "utf8",
         "private": true,
         "recurse": true,
-        "readme": "README.md"
+        "readme": "DOCUMENTATION.md"
     }
 }

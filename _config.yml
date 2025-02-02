@@ -1,0 +1,13 @@
+source: ./
+destination: ./_site
+include:
+  - ./README.md
+  - ./CHANGELOG.md
+  - ./resources/documentation/*
+exclude:
+  - "*.js"
+  - "*.ts"
+  - "*.json"
+  - "*.mjs"
+  - DOCUMENTATION.md
+theme: just-the-docs

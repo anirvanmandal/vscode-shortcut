@@ -1,9 +1,14 @@
+---
+permalink: changelog.html
+---
+
 # Change Log
 
 ## [Unreleased]
 
 ### Added
 
+- Update the documentation for the project [#3](https://github.com/anirvanmandal/vscode-shortcut/issues/3)
 - Add a new tree view for assigned stories [#5](https://github.com/anirvanmandal/vscode-shortcut/issues/5)
 
 ### Changed
