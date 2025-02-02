@@ -46,8 +46,10 @@ This extension has the following settings:
 ## Usage
 
 1. There is a new menu item in the activity bar called "Shortcut"
-![Shortcut View](./resources/documentation/shortcut-view.png)
+
+![Shortcut View](./resources/documentation/shortcut-extension.png)
 2. Clicking on the menu item will open the Shortcut view
+
 ![Shortcut View](./resources/documentation/tree-view.png)
 3. The view will display all stories assigned to you across all your workspaces in a tree
 4. The view will also display all stories that have a task assigned to you
@@ -59,7 +61,7 @@ This extension has the following settings:
 
 Please take a look at the [issues](https://github.com/shortcut-tools/vscode-shortcut/issues) page for any known issues.
 
-## See [CHANGELOG](./CHANGELOG.html) for Release Notes
+## See [CHANGELOG](./changelog.html) for Release Notes
 
 ## Contributing
 
