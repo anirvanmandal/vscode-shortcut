@@ -46,11 +46,11 @@ This extension has the following settings:
 ## Usage
 
 1. There is a new menu item in the activity bar called "Shortcut"
-
 ![Shortcut View](./resources/documentation/shortcut-extension.png)
-2. Clicking on the menu item will open the Shortcut view
 
+2. Clicking on the menu item will open the Shortcut view
 ![Shortcut View](./resources/documentation/tree-view.png)
+
 3. The view will display all stories assigned to you across all your workspaces in a tree
 4. The view will also display all stories that have a task assigned to you
 5. There is an action on the story node to open the story in Shortcut
