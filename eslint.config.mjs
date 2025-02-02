@@ -1,13 +1,11 @@
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsdoc from "eslint-plugin-tsdoc";
 import tsParser from "@typescript-eslint/parser";
 
 export default [{
     files: ["**/*.ts"],
 }, {
     plugins: {
-        "@typescript-eslint": typescriptEslint,
-        tsdoc,
+        "@typescript-eslint": typescriptEslint
     },
 
     languageOptions: {
