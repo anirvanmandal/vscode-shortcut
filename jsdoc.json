@@ -19,7 +19,7 @@
         "showInheritedInNav": true
     },
     "opts": {
-        "destination": "./_site/docs",
+        "destination": "/github/workspace/_site/docs",
         "encoding": "utf8",
         "private": true,
         "recurse": true,
