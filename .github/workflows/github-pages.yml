@@ -33,6 +33,10 @@ jobs:
       - name: Install modules
         run: | 
           npm i
+      - name: Generate JS Doc files
+        uses: andstor/jsdoc-action@v1
+        with:
+          config_file: jsdoc.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
@@ -40,10 +44,6 @@ jobs:
         with:
           source: ./
           destination: ./_site
-      - name: Generate JS Doc files
-        uses: andstor/jsdoc-action@v1
-        with:
-          config_file: jsdoc.json
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
