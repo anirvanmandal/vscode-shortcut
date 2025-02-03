@@ -6,6 +6,15 @@ permalink: changelog.html
 
 ## [Unreleased]
 
+## [0.1.3] - 2025-02-03
+
+### Fixed
+
+- Fix refresh task
+- Separate the refresh task for the two tree views
+- Fix branch name
+- Namespace the commands for the extension
+
 ## [0.1.2] - 2025-02-02
 
 ### Fixed

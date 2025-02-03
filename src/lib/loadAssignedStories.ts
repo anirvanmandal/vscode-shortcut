@@ -15,7 +15,7 @@ export const loadAssignedStories = async (workspaces: Workspace[], treeProvider:
     try {
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: "Fetching Workflow States...",
+			title: "Fetching Assigned Stories...",
 			cancellable: false
 		}, async (progress) => {
             for (const workspace of workspaces) { 
@@ -28,6 +28,6 @@ export const loadAssignedStories = async (workspaces: Workspace[], treeProvider:
 			}
 		});
 	} catch (error: any) {
-		vscode.window.showErrorMessage(`Error fetching Assigns Stories: ${error.message}`);
+		vscode.window.showErrorMessage(`Error fetching Assigned Stories: ${error.message}`);
 	}
 };

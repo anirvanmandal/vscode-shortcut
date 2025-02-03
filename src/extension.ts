@@ -63,15 +63,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	loadAssignedStories(workspaces, assignedStoryTreeProvider);
 
 	// Register command to fetch tasks
-	let disposable = vscode.commands.registerCommand('shortcut.fetchShortcutTasks', async () => {
+	let pendingTasksDisposable = vscode.commands.registerCommand('shortcut.pendingTasks.fetchStories', async () => {
 		loadPendingTasks(workspaces, storyTreeProvider);
+	});
+
+	let assignedStoriesDisposable = vscode.commands.registerCommand('shortcut.assignedStories.fetchStories', async () => {
 		loadAssignedStories(workspaces, assignedStoryTreeProvider);
 	});
 
 	// Listen for configuration changes
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(async e => {
-			if (e.affectsConfiguration('pendingTasks')) {
+			if (e.affectsConfiguration('shortcut')) {
 				const config = getConfiguration();
 				updateFromConfig(config);
 				Workspace.deleteCache(workspaces);
@@ -82,20 +85,22 @@ export async function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
-	context.subscriptions.push(vscode.commands.registerCommand('pendingTasks.completeTask', async (item: any) => {
+	context.subscriptions.push(vscode.commands.registerCommand('shortcut.pendingTasks.completeTask', async (item: any) => {
 		markTaskAsComplete(item.workspace, item.taskId, item.storyId);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('copyBranchName', async (item: any) => {
+	context.subscriptions.push(vscode.commands.registerCommand('shortcut.copyBranchName', async (item: any) => {
 		vscode.env.clipboard.writeText(item.story.branchName(item.workspace));
 	}));
 
-	context.subscriptions.push(disposable);
-	context.subscriptions.push(vscode.commands.registerCommand('pendingTasks.openStory', async (item: any) => {
+	context.subscriptions.push(pendingTasksDisposable);
+	context.subscriptions.push(assignedStoriesDisposable);
+	
+	context.subscriptions.push(vscode.commands.registerCommand('shortcut.openStory', async (item: any) => {
 		vscode.env.openExternal(vscode.Uri.parse(item.story.app_url));
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('refreshWorkspaces', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('shortcut.refreshWorkspaces', async () => {
 		Workspace.deleteCache(workspaces);
 		workspaces = await Workspace.get(apiTokens);
 		loadPendingTasks(workspaces, storyTreeProvider);

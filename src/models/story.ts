@@ -84,7 +84,7 @@ export class Story extends BaseModel {
      * @returns {string} The story identifier
      */
     storyIdentifier(): string {
-        return this.app_url.split('/').pop()?.split('-').slice(0, 6).join('-') ?? '';
+        return this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-').replace(/\-\-+/g, '-').replace(/-$/, '').split('-').slice(0, 6).join('-');
     }
 
     /**

@@ -3,7 +3,7 @@
   "displayName": "Shortcut",
   "icon": "resources/logo-shortcut.png",
   "description": "Manage Shortcut workflows from your VSCode",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "homepage": "https://anirvanmandal.github.io/vscode-shortcut",
   "changelog": "https://anirvanmandal.github.io/vscode-shortcut/changelog.html",
   "engines": {
@@ -42,27 +42,32 @@
     ],
     "commands": [
       {
-        "command": "pendingTasks.fetchShortcutTasks",
+        "command": "shortcut.pendingTasks.fetchStories",
         "title": "Shortcut: Fetch Pending Tasks",
         "icon": "$(extensions-refresh)"
       },
       {
-        "command": "pendingTasks.openStory",
+        "command": "shortcut.assignedStories.fetchStories",
+        "title": "Shortcut: Fetch Assigned Stories",
+        "icon": "$(extensions-refresh)"
+      },
+      {
+        "command": "shortcut.openStory",
         "title": "Shortcut: Open Story",
         "icon": "$(link-external)"
       },
       {
-        "command": "pendingTasks.completeTask",
+        "command": "shortcut.pendingTasks.completeTask",
         "title": "Shortcut: Complete Task",
         "icon": "$(check)"
       },
       {
-        "command": "refreshWorkspaces",
+        "command": "shortcut.refreshWorkspaces",
         "title": "Shortcut: Refresh Workspaces",
         "icon": "$(extensions-refresh)"
       },
       {
-        "command": "copyBranchName",
+        "command": "shortcut.copyBranchName",
         "title": "Shortcut: Copy Branch Name",
         "icon": "$(copy)"
       }
@@ -91,24 +96,29 @@
     "menus": {
       "view/title": [
         {
-          "command": "pendingTasks.fetchShortcutTasks",
+          "command": "shortcut.pendingTasks.fetchStories",
           "when": "view == pendingTasks",
+          "group": "navigation"
+        },
+        {
+          "command": "shortcut.assignedStories.fetchStories",
+          "when": "view == assignedStories",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "pendingTasks.openStory",
+          "command": "shortcut.openStory",
           "when": "(view == pendingTasks && viewItem == story) || (view == assignedStories && viewItem == story)",
           "group": "inline"
         },
         {
-          "command": "pendingTasks.completeTask",
+          "command": "shortcut.pendingTasks.completeTask",
           "when": "view == pendingTasks && viewItem == task && !viewItem.isComplete",
           "group": "inline"
         },
         {
-          "command": "copyBranchName",
+          "command": "shortcut.copyBranchName",
           "when": "view == assignedStories && viewItem == story",
           "group": "inline"
         }
