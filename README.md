@@ -58,7 +58,7 @@ This extension has the following settings:
 
 ## Known Issues
 
-Please take a look at the [issues](https://github.com/shortcut-tools/vscode-shortcut/issues) page for any known issues.
+Please take a look at the [issues](https://github.com/anirvanmandal/vscode-shortcut/issues) page for any known issues.
 
 ## See [CHANGELOG](https://anirvanmandal.github.io/vscode-shortcut/changelog.html) for Release Notes
 
