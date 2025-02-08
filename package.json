@@ -38,6 +38,15 @@
             }
           }
         }
+      }, {
+        "title": "Shortcut",
+        "properties": {
+          "shortcut.hideEmptyWorkspaces": {
+            "description": "Hide workspaces with no pending tasks or assigned stories",
+            "type": "boolean",
+            "default": false
+          }
+        }
       }
     ],
     "commands": [
