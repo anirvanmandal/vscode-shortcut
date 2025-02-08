@@ -26,11 +26,12 @@ export class Story extends BaseModel {
      * Creates a new Story instance from Shortcut story data.
      * @param {ShortcutStory | any} story - The story data from Shortcut API
      */
-    constructor(story: ShortcutStory | any) {
+     
+    constructor(story: ShortcutStory) {
         super();
-        this.id = story.id ?? "";
-        this.name = story.name ?? "";
-        this.app_url = story.app_url ?? "";
+        this.id = story.id;
+        this.name = story.name;
+        this.app_url = story.app_url;
         this.tasks = story.tasks.map((task: ShortcutTask) => new Task(task));
         this.workflow_id = story.workflow_id ?? 0;
         this.workflow_state_id = story.workflow_state_id ?? 0;
@@ -42,7 +43,7 @@ export class Story extends BaseModel {
      */
     static async all(): Promise<Story[]> {
         const response = await Story.client.searchStories({ query: "is:story and is:started and has:tasks and !is:archived", page_size: 25, detail: "full" });
-        let stories = Story.parseStorySearchResults(response.data);        
+        const stories = Story.parseStorySearchResults(response.data);        
         return stories;
     }
 
@@ -60,6 +61,13 @@ export class Story extends BaseModel {
             return [];
         }
         return all_stories.filter(story => story.tasks.some(task => task.member_mention_ids.includes(member.id) && !task.complete));
+    }
+    pendingTasks(workspace: Workspace): Task[] {
+        const memberId = workspace.memberInfo?.id;
+        if (!memberId) {
+            return [];
+        }
+        return this.tasks.filter(task => task.member_mention_ids.includes(memberId) && !task.complete);
     }
 
     /**
@@ -84,7 +92,7 @@ export class Story extends BaseModel {
      * @returns {string} The story identifier
      */
     storyIdentifier(): string {
-        return this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-').replace(/\-\-+/g, '-').replace(/-$/, '').split('-').slice(0, 6).join('-');
+        return this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-').replace(/--+/g, '-').replace(/-$/, '').split('-').slice(0, 6).join('-');
     }
 
     /**
@@ -102,6 +110,6 @@ export class Story extends BaseModel {
      * @returns {Story[]} An array of Story instances
      */
     static parseStorySearchResults(results: StorySearchResults): Story[] {
-        return results.data.map(story => new Story(story));
+        return results.data.map(story => new Story(story as ShortcutStory));
     }
 }

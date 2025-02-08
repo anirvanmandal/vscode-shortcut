@@ -1,4 +1,5 @@
 import { ShortcutClient } from "@shortcut/client";
+import { ExtensionContext as vscodeExtensionContext } from "vscode";
 
 /**
  * Base model class that provides common functionality for all models in the application.
@@ -8,5 +9,6 @@ export class BaseModel {
     /** The Shortcut API client instance used for making API requests */
     static client: ShortcutClient;
     /** The VS Code extension context */
-    static context: any;
+    static context: vscodeExtensionContext;
 }
+    

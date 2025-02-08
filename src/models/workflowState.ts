@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseModel } from "./base";
 import { Story } from "./story";
 

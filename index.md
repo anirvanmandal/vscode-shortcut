@@ -24,6 +24,7 @@ This extension helps you manage your [Shortcut](https://www.shortcut.com/) stori
 This extension has the following settings:
 
 - `shortcut.apiTokens`
+- `shortcut.hideEmptyWorkspaces`
 
 ## Setup
 

@@ -36,6 +36,7 @@ export const loadAssignedStories = async (workspaces: Workspace[], treeProvider:
 				vscode.window.showInformationMessage('No workspaces found in Shortcut.');
 			}
 		});
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		vscode.window.showErrorMessage(`Error fetching Assigned Stories: ${error.message}`);
 	}
