@@ -32,8 +32,14 @@ export class MemberInfo extends BaseModel {
      * @param {any} json - The JSON data containing member information
      * @returns {MemberInfo} A new MemberInfo instance
      */
-    static fromJson(json: any): MemberInfo {
-        return new MemberInfo(json.id, json.name, json.mention_name);
+     
+    static fromJson(json: unknown): MemberInfo {
+        if (typeof json !== 'object' || json === null) {
+            throw new Error('Invalid JSON data for MemberInfo');
+        }
+        
+        const data = json as { id?: string; name?: string; mention_name?: string };
+        return new MemberInfo(data.id, data.name, data.mention_name);
     }
 
     /**
@@ -44,7 +50,12 @@ export class MemberInfo extends BaseModel {
     static async fetch(workspace: Workspace): Promise<MemberInfo> {
         const response = await workspace.client.getCurrentMemberInfo();
         const memberInfo = MemberInfo.fromJson(response.data);
-        workspace.updateAttributes(response.data, memberInfo);
+        workspace.updateAttributes({
+            workspace2: {
+                estimate_scale: response.data.workspace2?.estimate_scale,
+                url_slug: response.data.workspace2?.url_slug
+            }
+        }, memberInfo);
         
         return memberInfo;
     }
@@ -56,7 +67,7 @@ export class MemberInfo extends BaseModel {
      */
     static fetchFromCache(workspaceName: string): MemberInfo | null {
         const cacheKey = MemberInfo.cacheKey(workspaceName);
-        const cache = BaseModel.context.globalState.get(cacheKey);
+        const cache = BaseModel.context.globalState.get<string>(cacheKey);
         if (cache) {
             return MemberInfo.fromJson(JSON.parse(cache));
         }
@@ -118,6 +129,6 @@ export class MemberInfo extends BaseModel {
      */
     static deleteCache(workspaceName: string) {
         const cacheKey = MemberInfo.cacheKey(workspaceName);
-        MemberInfo.context.globalState.update(MemberInfo.cacheKey(workspaceName), undefined);
+        MemberInfo.context.globalState.update(cacheKey, undefined);
     }
 }

@@ -18,7 +18,11 @@ import { Config } from '../models/config';
  * @returns {Promise<void>} A promise that resolves when all tasks are loaded
  * @throws {Error} If there's an error fetching pending tasks from the API
  */
-export const loadPendingTasks = async (workspaces: Workspace[], storyTreeProvider: StoryTreeProvider, config: Config) => {
+export const loadPendingTasks = async (
+    workspaces: Workspace[],
+    storyTreeProvider: StoryTreeProvider,
+    config: Config
+): Promise<void> => {
     try {
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -36,6 +40,7 @@ export const loadPendingTasks = async (workspaces: Workspace[], storyTreeProvide
 				vscode.window.showInformationMessage('No workspaces found in Shortcut.');
 			}
 		});
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		vscode.window.showErrorMessage(`Error fetching Pending tasks: ${error.message}`);
 	}

@@ -69,7 +69,7 @@ export class AssignedStoryTreeProvider implements vscode.TreeDataProvider<TreeIt
         if (!element) {
             let displayedWorkspaces = this.workspaces.map(workspace => {
                 const workspaceStoriesCount = workspace.workflows.map(workflow => workflow.states.map(state => state.stories.length).reduce((a,b) => a + b, 0)).reduce((a,b) => a + b, 0);
-                let workspaceTreeItem = new WorkspaceTreeItem(
+                const workspaceTreeItem = new WorkspaceTreeItem(
                     `${workspace.name} (${workspaceStoriesCount})`,
                     workspace.workflows.length > 0 ? 
                         vscode.TreeItemCollapsibleState.Collapsed :
@@ -88,7 +88,7 @@ export class AssignedStoryTreeProvider implements vscode.TreeDataProvider<TreeIt
         } else if (element instanceof WorkspaceTreeItem) {
             let displayedWorkflows = element.workspace.workflows.map(workflow => {
                 const workflowStoriesCount = workflow.states.map(state => state.stories.length).reduce((a, b) => a + b, 0);
-                let workflowTreeItem = new WorkflowTreeItem(
+                const workflowTreeItem = new WorkflowTreeItem(
                     `${workflow.name} (${workflowStoriesCount})`,
                     workflow.id.toString(),
                     workflow.states.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
@@ -105,7 +105,7 @@ export class AssignedStoryTreeProvider implements vscode.TreeDataProvider<TreeIt
         } else if (element instanceof WorkflowTreeItem) {
             let displayedStates = element.workflow.states.map(state => {
                 const stateStoriesCount = state.stories.length;
-                let stateTreeItem = new StateTreeItem(
+                const stateTreeItem = new StateTreeItem(
                     `${state.name} (${stateStoriesCount})`,
                     state.id.toString(),
                     state,
@@ -269,8 +269,6 @@ class StoryTreeItem extends TreeItem {
         this.tooltip = `${this.label}`;
         this.description = `#${this.storyId}`;
         this.contextValue = 'story';
-        this.story = story;
-        this.workspace = workspace;
         this.iconPath = new vscode.ThemeIcon('book');
     }
 }

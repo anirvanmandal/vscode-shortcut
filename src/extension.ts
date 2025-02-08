@@ -10,6 +10,7 @@ import { loadPendingTasks } from './lib/loadPendingTasks';
 import { loadAssignedStories } from './lib/loadAssignedStories';
 import { markTaskAsComplete } from './lib/markTaskAsComplete';
 import { Config } from './models/config';
+import { quickPickInput } from './lib/quickPickInput';
 
 /**
  * Retrieves the Shortcut extension configuration from VS Code settings.
@@ -70,12 +71,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
 
 	// Register command to fetch pending tasks
-	let pendingTasksDisposable = vscode.commands.registerCommand('shortcut.pendingTasks.fetchStories', async () => {
+	const pendingTasksDisposable = vscode.commands.registerCommand('shortcut.pendingTasks.fetchStories', async () => {
 		loadPendingTasks(workspaces, storyTreeProvider, config);
 	});
 
 	// Register command to fetch assigned stories
-	let assignedStoriesDisposable = vscode.commands.registerCommand('shortcut.assignedStories.fetchStories', async () => {
+	const assignedStoriesDisposable = vscode.commands.registerCommand('shortcut.assignedStories.fetchStories', async () => {
 		loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
 	});
 
@@ -93,11 +94,19 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	// Register command to mark a task as complete
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.subscriptions.push(vscode.commands.registerCommand('shortcut.pendingTasks.completeTask', async (item: any) => {
-		markTaskAsComplete(item.workspace, item.taskId, item.storyId);
+		if (item === undefined) {
+			quickPickInput(workspaces);
+		} else {
+			markTaskAsComplete(item.workspace, item.taskId, item.storyId);
+		}
+
+		
 	}));
 
 	// Register command to copy story branch name
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.subscriptions.push(vscode.commands.registerCommand('shortcut.copyBranchName', async (item: any) => {
 		vscode.env.clipboard.writeText(item.story.branchName(item.workspace));
 	}));
@@ -106,6 +115,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(assignedStoriesDisposable);
 	
 	// Register command to open story in browser
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.subscriptions.push(vscode.commands.registerCommand('shortcut.openStory', async (item: any) => {
 		vscode.env.openExternal(vscode.Uri.parse(item.story.app_url));
 	}));
