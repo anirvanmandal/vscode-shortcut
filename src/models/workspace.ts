@@ -1,11 +1,18 @@
+/**
+ * @fileoverview Defines the Workspace class and related types for managing Shortcut workspace data.
+ * This module handles workspace configuration, story management, and caching functionality.
+ */
+
 import { Story } from "./story";
 import { BaseModel } from "./base";
 import { MemberInfo } from "./memberInfo";
 import { Workflow } from "./workflow";
 import { ShortcutClient } from "@shortcut/client";
 
+/** Base type for model attributes */
 type BaseAttributes = Record<string, unknown>;
 
+/** Interface defining the structure of workspace attributes */
 interface WorkspaceAttributes extends BaseAttributes {
     name: string;
     apiToken: string;
@@ -15,6 +22,11 @@ interface WorkspaceAttributes extends BaseAttributes {
     url_slug?: string | undefined;
 }
 
+/**
+ * Class representing a Shortcut workspace.
+ * Handles workspace data, story management, and interactions with the Shortcut API.
+ * @extends BaseModel
+ */
 export class Workspace extends BaseModel {
     name: string;
     apiToken: string;
@@ -25,8 +37,13 @@ export class Workspace extends BaseModel {
     estimate_scale: number[] | undefined;
     url_slug: string | undefined;
     
+    /** Key used for caching workspace data */
     static cacheKey: string = "workspaces";
 
+    /**
+     * Creates a new Workspace instance
+     * @param {WorkspaceAttributes} attributes - The workspace attributes
+     */
     constructor(attributes: WorkspaceAttributes) {
         super();
 
@@ -39,6 +56,11 @@ export class Workspace extends BaseModel {
         this.url_slug = attributes.url_slug ?? "";
     }
     
+    /**
+     * Creates Workspace instances from JSON string
+     * @param {string} json - JSON string containing workspace data
+     * @returns {Workspace[]} Array of Workspace instances
+     */
     static fromJSON(json: string): Workspace[] {
         return JSON.parse(json).map((workspace: WorkspaceAttributes) => {
             const attributes: WorkspaceAttributes = {
@@ -53,10 +75,18 @@ export class Workspace extends BaseModel {
         });
     }
 
+    /**
+     * Converts workspace instance to JSON string
+     * @returns {string} JSON string representation of the workspace
+     */
     toJSON(): string {
         return JSON.stringify(this.toObject());
     }
 
+    /**
+     * Converts workspace instance to plain object
+     * @returns {WorkspaceAttributes} Plain object representation of the workspace
+     */
     toObject(): WorkspaceAttributes {
         return {
             name: this.name,
@@ -68,12 +98,22 @@ export class Workspace extends BaseModel {
         };
     }
 
+    /**
+     * Updates workspace attributes with new data
+     * @param {Object} data - New workspace data
+     * @param {MemberInfo} memberInfo - Updated member information
+     */
     updateAttributes(data: { workspace2: { estimate_scale: number[] | undefined, url_slug: string | undefined }}, memberInfo: MemberInfo) {
             this.estimate_scale = data.workspace2.estimate_scale;
             this.url_slug = data.workspace2.url_slug;
             this.memberInfo = memberInfo;
     }
 
+    /**
+     * Retrieves workspaces from cache or creates new ones from API tokens
+     * @param {object | undefined} apiTokens - API tokens for workspace creation
+     * @returns {Promise<Workspace[]>} Array of workspace instances
+     */
     static async get(apiTokens: object | undefined): Promise<Workspace[]> {
         let workspaces = Workspace.getFromCache();
 
@@ -110,6 +150,10 @@ export class Workspace extends BaseModel {
         return workspaces;
     }
 
+    /**
+     * Retrieves workspaces from cache
+     * @returns {Workspace[] | undefined} Array of workspace instances or undefined if cache is empty
+     */
     static getFromCache(): Workspace[] | undefined {
         const cache = Workspace.context.globalState.get(Workspace.cacheKey);
         
@@ -120,11 +164,19 @@ export class Workspace extends BaseModel {
         return Workspace.fromJSON(cache as string);
     }
 
+    /**
+     * Saves workspaces to cache
+     * @param {Workspace[]} workspaces - Array of workspaces to cache
+     */
     static saveToCache(workspaces: Workspace[]) {
         const object = workspaces.map(workspace => workspace.toObject());
         Workspace.context.globalState.update(Workspace.cacheKey, JSON.stringify(object));
     }
 
+    /**
+     * Deletes workspace cache and related caches
+     * @param {Workspace[] | undefined} workspaces - Optional workspaces to clear related caches
+     */
     static deleteCache(workspaces: Workspace[] | undefined = undefined) {
         Workspace.context.globalState.update(Workspace.cacheKey, undefined);
         
@@ -136,15 +188,28 @@ export class Workspace extends BaseModel {
         }
     }
 
+    /**
+     * Fetches and updates pending stories for the workspace
+     * @returns {Promise<void>}
+     */
     async getPendingStories(): Promise<void> {
         this.pendingStories = await Story.pendingTasks(this, this.client);
     }
 
+    /**
+     * Fetches and updates workflows for the workspace
+     * @returns {Promise<Workflow[]>} Array of workflows
+     */
     async getWorkflows(): Promise<Workflow[]> {
         this.workflows = await Workflow.get(this);
         return this.workflows;
     }
 
+    /**
+     * Fetches and organizes stories assigned to the workspace member
+     * Groups stories by workflow and workflow state
+     * @returns {Promise<void>}
+     */
     async getAssignedStories(): Promise<void> {
         const stories = await Story.assignedToMember(this);
         const groupedStories = stories.reduce((acc: Record<number, Record<number, Story[]>>, story) => {
