@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express from "express";
 import { Server } from "http";
 import { Request, Response } from "express";
