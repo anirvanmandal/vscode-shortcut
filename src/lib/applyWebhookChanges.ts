@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { Workspace } from '../models/workspace';
-import { AssignedStoryTreeProvider } from '../treeProviders/assignedStoryTreeProvider';
 import { Config } from '../models/config';
+import { AssignedStoryTreeProvider } from '../treeProviders/assignedStoryTreeProvider';
+import { StoryTreeProvider } from '../treeProviders/storyTreeProvider';
 
 /**
  * Loads stories assigned to the current user for all workspaces and updates the tree view.
@@ -18,25 +19,26 @@ import { Config } from '../models/config';
  * @returns {Promise<void>} A promise that resolves when all stories are loaded
  * @throws {Error} If there's an error fetching assigned stories from the API
  */
-export const loadAssignedStories = async (workspaces: Workspace[], treeProvider: AssignedStoryTreeProvider, config: Config) => {
+export const applyWebhookChanges = async (workspaces: Workspace[], data: any, config: Config, assignedStoryTreeProvider: AssignedStoryTreeProvider, pendingStoryTreeProvider: StoryTreeProvider) => {
     try {
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: "Fetching Assigned Stories. Workspace: ",
+			title: "Refreshing workspace. Workspace: ",
 			cancellable: false
 		}, async (progress) => {
-            for (const workspace of workspaces) { 
-				progress.report({message: `${workspace.name}` });
-                await workspace.getAssignedStories();
-				progress.report({ increment: ((1 / workspaces.length) * 100)});
-                treeProvider.refresh(workspaces, config);
-            }
-            
-			if (workspaces.length === 0) {
-				vscode.window.showInformationMessage('No workspaces found in Shortcut.');
-			}
+          const urlSlug = data.actions[0].app_url.match(/https:\/\/app\.shortcut\.com\/(\w*)\/.*/)[1];
+          const workspace = workspaces.find(workspace => workspace.url_slug === urlSlug);
+          
+          if (workspace) {
+            progress.report({message: `${workspace.name}` });
+            await workspace.getAssignedStories();
+            await workspace.getPendingStories();
+
+            assignedStoryTreeProvider.refresh(workspaces, config);
+            pendingStoryTreeProvider.refresh(workspaces, config);
+          }
 		});
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	 
 	} catch (error: any) {
 		vscode.window.showErrorMessage(`Error fetching Assigned Stories: ${error.message}`);
 	}

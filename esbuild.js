@@ -35,8 +35,11 @@ async function main() {
 		sourcesContent: false,
 		platform: 'node',
 		outfile: 'dist/extension.js',
-		external: ['vscode'],
+		external: ['vscode', '@ngrok/ngrok'],
 		logLevel: 'silent',
+		loader: {
+			'.node': 'file'
+		},
 		plugins: [
 			/* add to the end of plugins array */
 			esbuildProblemMatcherPlugin,

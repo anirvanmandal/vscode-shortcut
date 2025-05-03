@@ -76,11 +76,15 @@ export class Story extends BaseModel {
      * @returns {Promise<Story[]>} A promise that resolves to an array of Story instances
      */
     static async assignedToMember(workspace: Workspace): Promise<Story[]> {
+        console.log('workspace', workspace);
         let response = await workspace.client.searchStories({ query: `!is:done and !is:archived and owner:${workspace.memberInfo?.mention_name}`, page_size: 25, detail: "full" });
         let stories = Story.parseStorySearchResults(response.data);
-
+        
         while (response.data.next !== null) {
-            response = await workspace.client.searchStories({ query: `!is:done and !is:archived and owner:${workspace.memberInfo?.mention_name}`, page_size: 25, detail: "full", next: response.data.next });
+            const nextURL = new URL(`https://api.medaire.com/${response.data.next ?? ""}`);
+            const next = nextURL.searchParams.get('next') ?? "";
+            console.log('next');
+            response = await workspace.client.searchStories({ query: `!is:done and !is:archived and owner:${workspace.memberInfo?.mention_name}`, page_size: 25, detail: "full", next: next });
             stories = stories.concat(Story.parseStorySearchResults(response.data));
         }
 

@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { Story } from './models/story';
-import { Workspace } from './models/workspace';
+import { Story } from '../models/story';
+import { Workspace } from '../models/workspace';
 import removeMarkdown from "markdown-to-text";
-import { Config } from './models/config';
+import { Config } from '../models/config';
 
 /**
  * Tree data provider for displaying pending Shortcut stories and their tasks.

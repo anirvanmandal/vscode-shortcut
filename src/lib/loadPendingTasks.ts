@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Workspace } from '../models/workspace';
-import { StoryTreeProvider } from '../storyTreeProvider';
+import { StoryTreeProvider } from '../treeProviders/storyTreeProvider';
 import { Config } from '../models/config';
 
 /**

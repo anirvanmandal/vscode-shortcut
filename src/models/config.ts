@@ -9,6 +9,12 @@ export class Config {
 	apiTokens: object | undefined;
 	/** Whether to hide workspaces that have no stories/tasks */
 	hideEmptyWorkspaces: boolean | undefined;
+	/** The port to run the HTTP server on */
+	httpServerPort: number | undefined;
+	/** The auth token for ngrok */
+	ngrokAuthToken: string | undefined;
+	/** The domain for ngrok */
+	ngrokDomain: string | undefined;
 
 	/**
 	 * Creates a new Config instance.
@@ -19,5 +25,8 @@ export class Config {
 	constructor(config?: vscode.WorkspaceConfiguration) {   
 		this.apiTokens = config?.get<object[]>('apiTokens');
 		this.hideEmptyWorkspaces = config?.get<boolean>('hideEmptyWorkspaces');
+		this.httpServerPort = config?.get<number>('httpServerPort');
+		this.ngrokAuthToken = config?.get<string>('ngrokAuthToken');
+		this.ngrokDomain = config?.get<string>('ngrokDomain');
 	}
 }
