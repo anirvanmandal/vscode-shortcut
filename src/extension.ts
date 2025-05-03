@@ -1,30 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import { StoryTreeProvider } from './storyTreeProvider';
-import { AssignedStoryTreeProvider } from './assignedStoryTreeProvider';
+import * as vscode from "vscode";
+import { StoryTreeProvider } from "./treeProviders/storyTreeProvider";
+import { AssignedStoryTreeProvider } from "./treeProviders/assignedStoryTreeProvider";
+// import { startHttpServer, stopHttpServer } from './lib/httpServer';
+// import { startNgrok, stopNgrok } from './lib/ngrokServer';
 
-import { BaseModel } from './models/base';
-import { Workspace } from './models/workspace';
-import { loadPendingTasks } from './lib/loadPendingTasks';
-import { loadAssignedStories } from './lib/loadAssignedStories';
-import { markTaskAsComplete } from './lib/markTaskAsComplete';
-import { Config } from './models/config';
-import { quickPickInput } from './lib/quickPickInput';
-
-/**
- * Retrieves the Shortcut extension configuration from VS Code settings.
- * @returns {vscode.WorkspaceConfiguration} The extension's configuration settings
- */
-function getConfiguration(): vscode.WorkspaceConfiguration {
-	return vscode.workspace.getConfiguration('shortcut');
-}
+import { BaseModel } from "./models/base";
+import { Workspace } from "./models/workspace";
+import { loadPendingTasks } from "./lib/loadPendingTasks";
+import { loadAssignedStories } from "./lib/loadAssignedStories";
+import { markTaskAsComplete } from "./lib/markTaskAsComplete";
+import { Config } from "./models/config";
+import { quickPickInput } from "./lib/quickPickInput";
 
 let config: Config;
 
 /**
  * Activates the extension and sets up all necessary components.
- * 
+ *
  * Sets up:
  * - Tree views for pending tasks and assigned stories
  * - Initializes workspaces with API tokens from configuration
@@ -35,112 +31,152 @@ let config: Config;
  *   - Opening stories in browser
  *   - Refreshing workspaces
  * - Listens for configuration changes to update workspaces and views
- * 
+ *
  * @param {vscode.ExtensionContext} context - The VS Code extension context providing access to extension utilities and resources
  * @returns {Promise<void>} A promise that resolves when activation is complete
  */
 export async function activate(context: vscode.ExtensionContext) {
-	updateConfig(getConfiguration());
-	BaseModel.context = context;
-	let workspaces: Workspace[] = [];
+  updateConfig(getConfiguration());
+  BaseModel.context = context;
+  let workspaces: Workspace[] = [];
 
-	const storyTreeProvider = new StoryTreeProvider();
-	const assignedStoryTreeProvider = new AssignedStoryTreeProvider();
-	
-	console.log('Congratulations, your extension "vscode-shortcut-tasks" is now active!');
+  const storyTreeProvider = new StoryTreeProvider();
+  const assignedStoryTreeProvider = new AssignedStoryTreeProvider();
 
-	const treeView = vscode.window.createTreeView('pendingTasks', {
-		treeDataProvider: storyTreeProvider
-	});
+  console.log(
+    'Congratulations, your extension "vscode-shortcut-tasks" is now active!'
+  );
 
-	const assignedTreeView = vscode.window.createTreeView('assignedStories', {
-		treeDataProvider: assignedStoryTreeProvider
-	});
-	
-	storyTreeProvider.refresh([], config);
-	assignedStoryTreeProvider.refresh([], config);
+  const treeView = vscode.window.createTreeView("pendingTasks", {
+    treeDataProvider: storyTreeProvider,
+  });
 
-	context.subscriptions.push(treeView);
-	context.subscriptions.push(assignedTreeView);
+  const assignedTreeView = vscode.window.createTreeView("assignedStories", {
+    treeDataProvider: assignedStoryTreeProvider,
+  });
 
-	workspaces = await Workspace.get(config.apiTokens);
+  storyTreeProvider.refresh([], config);
+  assignedStoryTreeProvider.refresh([], config);
 
-	storyTreeProvider.refresh(workspaces, config);
-	assignedStoryTreeProvider.refresh(workspaces, config);
-	loadPendingTasks(workspaces, storyTreeProvider, config);
-	loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
+  context.subscriptions.push(treeView);
+  context.subscriptions.push(assignedTreeView);
 
-	// Register command to fetch pending tasks
-	const pendingTasksDisposable = vscode.commands.registerCommand('shortcut.pendingTasks.fetchStories', async () => {
-		loadPendingTasks(workspaces, storyTreeProvider, config);
-	});
+  workspaces = await Workspace.get(config.apiTokens);
 
-	// Register command to fetch assigned stories
-	const assignedStoriesDisposable = vscode.commands.registerCommand('shortcut.assignedStories.fetchStories', async () => {
-		loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
-	});
+  // Start the HTTP server
+  // startHttpServer(config.httpServerPort, workspaces, config, assignedStoryTreeProvider, storyTreeProvider);
+  // startNgrok(config);
 
-	// Listen for configuration changes and update workspaces/views
-	context.subscriptions.push(
-		vscode.workspace.onDidChangeConfiguration(async e => {
-			if (e.affectsConfiguration('shortcut')) {
-				updateConfig(getConfiguration());
-				Workspace.deleteCache(workspaces);
-				workspaces = await Workspace.get(config.apiTokens);
-				loadPendingTasks(workspaces, storyTreeProvider, config);
-				loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
-			}
-		})
-	);
+  storyTreeProvider.refresh(workspaces, config);
+  assignedStoryTreeProvider.refresh(workspaces, config);
+  loadPendingTasks(workspaces, storyTreeProvider, config);
+  loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
 
-	// Register command to mark a task as complete
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	context.subscriptions.push(vscode.commands.registerCommand('shortcut.pendingTasks.completeTask', async (item: any) => {
-		if (item === undefined) {
-			quickPickInput(workspaces);
-		} else {
-			markTaskAsComplete(item.workspace, item.taskId, item.storyId);
-		}
+  // Register command to fetch pending tasks
+  const pendingTasksDisposable = vscode.commands.registerCommand(
+    "shortcut.pendingTasks.fetchStories",
+    async () => {
+      loadPendingTasks(workspaces, storyTreeProvider, config);
+    }
+  );
 
-		
-	}));
+  // Register command to fetch assigned stories
+  const assignedStoriesDisposable = vscode.commands.registerCommand(
+    "shortcut.assignedStories.fetchStories",
+    async () => {
+      loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
+    }
+  );
 
-	// Register command to copy story branch name
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	context.subscriptions.push(vscode.commands.registerCommand('shortcut.copyBranchName', async (item: any) => {
-		vscode.env.clipboard.writeText(item.story.branchName(item.workspace));
-	}));
+  // Listen for configuration changes and update workspaces/views
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration("shortcut")) {
+        updateConfig(getConfiguration());
+        Workspace.deleteCache(workspaces);
+        workspaces = await Workspace.get(config.apiTokens);
+        loadPendingTasks(workspaces, storyTreeProvider, config);
+        loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
+      }
+    })
+  );
 
-	context.subscriptions.push(pendingTasksDisposable);
-	context.subscriptions.push(assignedStoriesDisposable);
-	
-	// Register command to open story in browser
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	context.subscriptions.push(vscode.commands.registerCommand('shortcut.openStory', async (item: any) => {
-		vscode.env.openExternal(vscode.Uri.parse(item.story.app_url));
-	}));
+  // Register command to mark a task as complete
 
-	// Register command to refresh workspaces and views
-	context.subscriptions.push(vscode.commands.registerCommand('shortcut.refreshWorkspaces', async () => {
-		Workspace.deleteCache(workspaces);
-		workspaces = await Workspace.get(config.apiTokens);
-		loadPendingTasks(workspaces, storyTreeProvider, config);
-		loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
-	}));
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "shortcut.pendingTasks.completeTask",
+      async (item: any) => {
+        if (item === undefined) {
+          quickPickInput(workspaces);
+        } else {
+          markTaskAsComplete(item.workspace, item.taskId, item.storyId);
+        }
+      }
+    )
+  );
+
+  // Register command to copy story branch name
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "shortcut.copyBranchName",
+      async (item: any) => {
+        vscode.env.clipboard.writeText(item.story.branchName(item.workspace));
+      }
+    )
+  );
+
+  context.subscriptions.push(pendingTasksDisposable);
+  context.subscriptions.push(assignedStoriesDisposable);
+
+  // Register command to open story in browser
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("shortcut.openStory", async (item: any) => {
+      vscode.env.openExternal(vscode.Uri.parse(item.story.app_url));
+    })
+  );
+
+  // Register command to refresh workspaces and views
+  context.subscriptions.push(
+    vscode.commands.registerCommand("shortcut.refreshWorkspaces", async () => {
+      Workspace.deleteCache(workspaces);
+      workspaces = await Workspace.get(config.apiTokens);
+      loadPendingTasks(workspaces, storyTreeProvider, config);
+      loadAssignedStories(workspaces, assignedStoryTreeProvider, config);
+    })
+  );
 }
 
 /**
  * Updates the extension's configuration settings.
  * Creates a new Config instance with the provided VS Code workspace configuration.
- * 
+ *
  * @param {vscode.WorkspaceConfiguration} vscodeConfig - The VS Code workspace configuration for the extension
  */
 function updateConfig(vscodeConfig: vscode.WorkspaceConfiguration) {
-	config = new Config(vscodeConfig);
+  config = new Config(vscodeConfig);
+}
+
+/**
+ * Retrieves the Shortcut extension configuration from VS Code settings.
+ * @returns {vscode.WorkspaceConfiguration} The extension's configuration settings
+ */
+function getConfiguration(): vscode.WorkspaceConfiguration {
+  return vscode.workspace.getConfiguration("shortcut");
 }
 
 /**
  * Handles cleanup when the extension is deactivated.
  * Currently no cleanup is needed, but this function is required by VS Code's extension API.
  */
-export function deactivate() {}
+export function deactivate() {
+  // Stop the HTTP server when the extension is deactivated
+  // stopHttpServer().catch(error => {
+  // 	console.error('Error stopping HTTP server:', error);
+  // });
+  // stopNgrok().catch(error => {
+  // 	console.error('Error stopping ngrok:', error);
+  // });
+}

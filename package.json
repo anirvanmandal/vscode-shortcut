@@ -22,7 +22,9 @@
     "tasks",
     "shortcut"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": [
@@ -42,10 +44,29 @@
       {
         "title": "Shortcut",
         "properties": {
+          "shortcut.ngrokAuthToken": {
+            "title": "Ngork Auth Token",
+            "description": "The auth token for ngrok",
+            "type": "string"
+          },
+          "shortcut.httpServerPort": {
+            "title": "HTTP Server Port",
+            "description": "The port to run the HTTP server on",
+            "type": "number",
+            "default": 9393
+          },
           "shortcut.hideEmptyWorkspaces": {
             "description": "Hide workspaces with no pending tasks or assigned stories",
             "type": "boolean",
             "default": false
+          },
+          "shortcut.ngrokDomain": {
+            "description": "The domain for ngrok",
+            "type": "string"
+          },
+          "shortcut.shortcutWebhookUrl": {
+            "description": "The webhook URL for shortcut",
+            "type": "string"
           }
         }
       }
@@ -152,7 +173,8 @@
     "docs": "jsdoc -c jsdoc.json"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
+    "@eslint/js": "^8.56.0",
+    "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.93.0",
@@ -161,14 +183,21 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.24.0",
-    "eslint": "^9.20.0",
+    "eslint": "^8.56.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.23.0"
   },
   "dependencies": {
+    "@ngrok/ngrok": "^1.4.1",
     "@shortcut/client": "^1.1.0",
     "better-docs": "^2.7.3",
+    "express": "^4.18.3",
     "markdown-to-text": "^0.1.1"
+  },
+  "optionalDependencies": {
+    "@ngrok/ngrok-darwin-universal": "^1.4.1",
+    "@ngrok/ngrok-linux-x64-gnu": "^1.4.1",
+    "@ngrok/ngrok-win32-x64-msvc": "^1.4.1"
   }
 }

@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { Story } from './models/story';
-import { Workspace } from './models/workspace';
-import { Workflow } from './models/workflow';
-import { WorkflowState } from './models/workflowState';
-import { Config } from './models/config';
+import { Story } from '../models/story';
+import { Workspace } from '../models/workspace';
+import { Workflow } from '../models/workflow';
+import { WorkflowState } from '../models/workflowState';
+import { Config } from '../models/config';
 
 /**
  * Tree data provider for displaying assigned Shortcut stories organized by workflow state.
