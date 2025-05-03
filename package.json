@@ -3,7 +3,7 @@
   "displayName": "Shortcut",
   "icon": "resources/logo-shortcut.png",
   "description": "Manage Shortcut workflows from your VSCode",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "homepage": "https://anirvanmandal.github.io/vscode-shortcut",
   "changelog": "https://anirvanmandal.github.io/vscode-shortcut/changelog.html",
   "engines": {

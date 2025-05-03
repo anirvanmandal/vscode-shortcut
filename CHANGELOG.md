@@ -6,6 +6,12 @@ permalink: changelog.html
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-05-03
+
+### Fixed
+
+- Fix the paginated query to fetch stories
+
 ## [0.1.3] - 2025-02-03
 
 ### Fixed
